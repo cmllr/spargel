@@ -1,0 +1,11 @@
+{{> partials/_head}} 
+
+<h2>{{ title }} </h2>
+<b>{{ sub_title }}</b>
+ {{#each posts}}
+    <li>
+    [<a href="/?id={{this.id}}">l</a>]
+    {{ this.content }}
+    </li>
+  {{/each}}
+{{> partials/_footer}} 
