@@ -6,6 +6,5 @@ pub struct Post {
     pub title: String,
     pub date: u64,
     pub content: String,
-    pub year_month_group: String,
-    pub day_group: String
+    pub slug: String
 }

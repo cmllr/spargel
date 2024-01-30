@@ -8,22 +8,29 @@ use std::fs::File;
 use std::io::Read;
 mod structs;
 mod helpers;
+use paginate::Pages;
 
 #[get("/")]
 fn index(blog_context: &State<structs::blog::Blog>) -> Template {
+    let all_posts = helpers::get_posts();
+    let total_items = all_posts.len();
+    let items_per_page = 2;
+    let current_page = 1;
+    let pages = Pages::new(total_items, items_per_page);
+    let page = pages.with_offset(current_page);
+    println!("offset: {}, total: {}, start: {}, end: {}", page.offset, page.length, page.start, page.end);
     Template::render(
         "index",
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),
-            posts: helpers::group_posts(helpers::get_posts()),
-            max_days: 30
+            posts: all_posts
         },
     )
 }
 
-#[get("/<id>")]
-fn post(blog_context: &State<structs::blog::Blog>, id: String) -> Template {
+#[get("/<id>/<_slug>")]
+fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String) -> Template {
     let posts = helpers::get_posts();
     let post = posts.into_iter().find(|d| d.id == id).unwrap();
     // TODO: 404
@@ -32,7 +39,7 @@ fn post(blog_context: &State<structs::blog::Blog>, id: String) -> Template {
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),
-            posts: helpers::group_posts(vec![post])
+            posts: vec![post]
         },
     )
 }
