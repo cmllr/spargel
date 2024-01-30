@@ -1,0 +1,14 @@
+{% for year, value in posts %}
+  {% for day, posts_this_day in value %}
+    {% for p in posts_this_day %}
+      {% if loop.index0 == 0 %}
+        <h3>{{ p.date | date(format="%Y-%m-%d")}}</h3>
+        <ul>
+      {% endif %}
+
+
+      {% include "partials/post" %}
+    {% endfor %}
+      </ul>
+  {% endfor %}
+{% endfor %}

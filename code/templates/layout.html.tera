@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <title>{{title}}</title>
+    {% endblock head %}
+</head>
+<body>
+<h2><a href="/" style="text-decoration:none;color:black">{{ title }}</a></h2>
+
+<b>{{ sub_title }}</b>
+
+    {% block content %}
+    {% endblock head %}
+<div style="text-align:right">Proudly made without PHP, Java, Perl, MySQL and Postgres<br><a
+        href="impressum.html">Impressum, Datenschutz</a></div>
+</body>
+
+</html>
