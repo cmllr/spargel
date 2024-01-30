@@ -6,19 +6,19 @@ use rocket::State;
 use rocket_dyn_templates::{context, Template};
 use std::fs::File;
 use std::io::Read;
+
 mod structs;
 mod helpers;
-use paginate::Pages;
 
 #[get("/")]
 fn index(blog_context: &State<structs::blog::Blog>) -> Template {
     let all_posts = helpers::get_posts();
-    let total_items = all_posts.len();
-    let items_per_page = 2;
-    let current_page = 1;
-    let pages = Pages::new(total_items, items_per_page);
-    let page = pages.with_offset(current_page);
-    println!("offset: {}, total: {}, start: {}, end: {}", page.offset, page.length, page.start, page.end);
+    let total_items_count = all_posts.len() as u32;
+    let current_site: u32 = 1;
+
+    let pagination = structs::pagination::Pagination::get(total_items_count, current_site, all_posts);
+    print!("{}, {}, {}, {}", pagination.has_next, pagination.has_prev, pagination.cur_page, pagination.all_pages);
+
     Template::render(
         "index",
         context! {
