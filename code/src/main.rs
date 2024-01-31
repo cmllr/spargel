@@ -2,15 +2,15 @@
 extern crate rocket;
 extern crate chrono;
 
+use std::{fs::File, io::Read};
+
 use rocket::State;
 use rocket_dyn_templates::{context, Template};
 use rocket::fs::FileServer;
 
-use std::fs::File;
-use std::io::Read;
-
 mod structs;
 mod helpers;
+mod feed;
 
 #[get("/?<page>")]
 fn index(blog_context: &State<structs::blog::Blog>, page: Option<usize>) -> Template {
@@ -49,6 +49,16 @@ fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String) ->
 
 
 
+#[get("/feed")]
+fn feed_url(blog_context: &State<structs::blog::Blog>) -> feed::FeedResponse {
+   let posts = helpers::get_posts();
+   let content = feed::get_feed(blog_context.inner().clone(), posts);
+   content
+}
+
+
+
+
 #[launch]
 fn rocket() -> _ {
     let mut file = File::open("blog.json").unwrap();
@@ -62,7 +72,7 @@ fn rocket() -> _ {
     rocket::build()
         .attach(Template::fairing())
         .mount("/static", FileServer::from("./static"))
-        .mount("/", routes![index, post])
+        .mount("/", routes![index, post, feed_url])
         
         .manage(blog_context)
 }

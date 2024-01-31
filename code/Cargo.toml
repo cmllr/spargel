@@ -1,5 +1,5 @@
 [package]
-name = "src"
+name = "spargel"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,8 +13,13 @@ md5 = "0.7.0"
 chrono = "0.4"
 indexmap = "2.2.1"
 slugify = "0.1.0"
-paginate = "1.1.11"
+rss = "2.0"
 
 [dependencies.rocket_dyn_templates]
 version = "0.1.0"
-features = ["handlebars", "tera"]
+features = ["tera"]
+
+[dependencies.rocket_contrib]
+version = "0.4.10"
+default-features = false
+features = ["serve"]
