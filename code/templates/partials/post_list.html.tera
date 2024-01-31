@@ -1,3 +1,6 @@
-{% for p in pagination.items %}
-    {% include "partials/post" %}
-{% endfor %}
+<section>
+    {% for p in pagination.items %}
+        {% include "partials/post" %}
+    {% endfor %}
+
+</section>

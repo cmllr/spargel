@@ -9,16 +9,16 @@
     <title>{{title}}</title>
     {% endblock head %}
 </head>
-<body>
-<h2><a href="/" style="text-decoration:none;color:black">{{ title }}</a></h2>
+<body class="terminal">
 
-<b>{{ sub_title }}</b>
+<div class="blog">
+{% include "partials/header" %}
 
     {% block content %}
-    {% endblock head %}
-    <p>
-<a href="https://github.com/cmllr/spargel">Proudly written in Rust</a>
-</p>
+{% endblock %}
+</div>
+
+{% include "partials/footer" %}
 </body>
 
 </html>

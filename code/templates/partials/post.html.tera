@@ -1,6 +1,17 @@
-<h1>{{p.title}}</h1>
-[<a href="/post/{{ p.id }}/{{ p.slug }}">l</a>] 
 
-<p>
-{{ p.content}}
+<h3>
+<a href="/post/{{ p.id }}/{{ p.slug }}">{{p.title}}</a>
+</h3>
+<p class="post-meta">
+    <span>
+        📎 {{p.date | date}}
+    </span>
 </p>
+<blockquote>
+    <p>
+      {{p.content}}
+    </p>
+</blockquote> 
+<div class="post-meta">
+
+</div>

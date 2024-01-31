@@ -16,7 +16,31 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+@import "./node_modules/terminal.css/dist/terminal.min";
+
 body {
-    background-color: #fbfefb;
-    font-family: monospace;
+    margin-left: 30%;
+    margin-right: 30%;
+
+
+    .footer {
+        text-align: center;
+    }
+
+    .post-meta {
+        font-style: italic;
+        font-size: small;
+    }
+}
+
+
+
+/* Overwrites */
+
+.terminal-card header a {
+    color: initial;
+}
+
+.container.subtitle {
+    margin-left: 0px;
 }

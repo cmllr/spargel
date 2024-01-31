@@ -32,7 +32,7 @@ pub struct Pagination {
 impl Pagination{
     pub fn get(total_items_count: usize, current_site: usize, items: Vec<post::Post>) -> Pagination {
 
-        let post_per_page: usize = 2;
+        let post_per_page: usize = 8;
     
         let all_items_count = items.len();
         let all_pages = total_items_count / post_per_page;
