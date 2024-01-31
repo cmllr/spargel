@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="/static/main.css">
+    {% for key, value in meta %}
+    <meta name="{{key}}" value="{{value}}"/>
+    {% endfor %}
     {% block head %}
     <title>{{title}}</title>
     {% endblock head %}
@@ -12,7 +16,9 @@
 
     {% block content %}
     {% endblock head %}
-
+    <p>
+<a href="https://github.com/cmllr/spargel">Proudly written in Rust</a>
+</p>
 </body>
 
 </html>

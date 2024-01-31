@@ -1,5 +1,5 @@
 {% extends "layout" %}
 {% block content %}
 
-{% include "partials/post_list" %}
+{% include "partials/post" %}
 {% endblock content %}

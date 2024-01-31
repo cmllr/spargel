@@ -1,5 +1,5 @@
 <h1>{{p.title}}</h1>
-[<a href="/{{ p.id }}/{{ p.slug }}">l</a>] 
+[<a href="/post/{{ p.id }}/{{ p.slug }}">l</a>] 
 
 <p>
 {{ p.content}}

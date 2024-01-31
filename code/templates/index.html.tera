@@ -2,4 +2,5 @@
 {% block content %}
 
 {% include "partials/post_list" %}
+{% include "partials/pagination" %}
 {% endblock content %}

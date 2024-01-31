@@ -4,32 +4,34 @@ extern crate chrono;
 
 use rocket::State;
 use rocket_dyn_templates::{context, Template};
+use rocket::fs::FileServer;
+
 use std::fs::File;
 use std::io::Read;
 
 mod structs;
 mod helpers;
 
-#[get("/")]
-fn index(blog_context: &State<structs::blog::Blog>) -> Template {
+#[get("/?<page>")]
+fn index(blog_context: &State<structs::blog::Blog>, page: Option<usize>) -> Template {
     let all_posts = helpers::get_posts();
-    let total_items_count = all_posts.len() as u32;
-    let current_site: u32 = 1;
+    let total_items_count: usize = all_posts.len();
+    let current_site: usize = page.unwrap_or(1);
 
     let pagination = structs::pagination::Pagination::get(total_items_count, current_site, all_posts);
-    print!("{}, {}, {}, {}", pagination.has_next, pagination.has_prev, pagination.cur_page, pagination.all_pages);
 
     Template::render(
         "index",
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),
-            posts: all_posts
+            pagination: pagination,
+            meta: blog_context.meta.clone()
         },
     )
 }
 
-#[get("/<id>/<_slug>")]
+#[get("/post/<id>/<_slug>")]
 fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String) -> Template {
     let posts = helpers::get_posts();
     let post = posts.into_iter().find(|d| d.id == id).unwrap();
@@ -39,7 +41,8 @@ fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String) ->
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),
-            posts: vec![post]
+            p: post,
+            meta: blog_context.meta.clone()
         },
     )
 }
@@ -52,10 +55,14 @@ fn rocket() -> _ {
     let mut buff = String::new();
     file.read_to_string(&mut buff).unwrap();
 
-    let blog_context: structs::blog::Blog = serde_json::from_str(&buff).unwrap();
+    let mut blog_context: structs::blog::Blog = serde_json::from_str(&buff).unwrap();
+    blog_context.meta.insert(String::from("generator"), format!("{} {}", option_env!("CARGO_PKG_NAME").unwrap(), option_env!("CARGO_PKG_VERSION").unwrap()));
+
 
     rocket::build()
         .attach(Template::fairing())
+        .mount("/static", FileServer::from("./static"))
         .mount("/", routes![index, post])
+        
         .manage(blog_context)
 }
