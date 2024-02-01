@@ -9,7 +9,7 @@
 </p>
 <blockquote>
     <p>
-      {{html|safe}}
+      {{p.content| truncate(length=10, end="...")}}
     </p>
 </blockquote> 
 <div class="post-meta">

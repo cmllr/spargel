@@ -22,7 +22,14 @@ use serde::{Deserialize, Serialize};
 pub struct Post {
     pub id: String,
     pub title: String,
-    pub date: u64,
+    pub date: i64,
     pub content: String,
-    pub slug: String
+    pub slug: String,
+    pub is_page: bool
+}
+
+impl Post {
+    pub fn html(self) -> String {
+        return markdown::to_html(self.content.as_str());
+    }
 }

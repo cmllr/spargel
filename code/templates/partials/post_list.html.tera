@@ -1,6 +1,6 @@
 <section>
     {% for p in pagination.items %}
-        {% include "partials/post" %}
+        {% include "partials/post_excempt" %}
     {% endfor %}
 
 </section>
