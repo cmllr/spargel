@@ -46,6 +46,13 @@ body {
     .post-excempt {
         margin-top: 1rem;
     }
+
+    .no-image-post {
+        background: var(--primary-color);
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 
@@ -57,5 +64,6 @@ body {
 }
 
 .container.subtitle {
-    margin-left: 0px;
+    margin-left: 0px;  
+    padding-left: 0px;
 }

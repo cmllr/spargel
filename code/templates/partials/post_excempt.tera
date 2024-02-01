@@ -7,7 +7,7 @@
                 <div class="terminal-avatarholder"><img width="50" height="50" src="{{p.image}}"></div>
 
         {% else %}
-                <div class="terminal-avatarholder"><img width="50" height="50"></div>
+                <div class="terminal-avatarholder"><span class="no-image-post" width="50" height="50"></span></div>
         {% endif %}
     </div>
     <div class="terminal-media-body">
@@ -23,7 +23,7 @@
 
             {% for tag in p.tags %}
             <span>
-                <a href="/?tag={{ tag }}">{{tag}}</a>
+                <a href="/?tag={{ tag }}">#{{tag}}</a>
             </span>
             {% endfor %}
         </div>

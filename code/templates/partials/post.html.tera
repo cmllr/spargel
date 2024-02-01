@@ -8,7 +8,7 @@
         📎 {{p.date | date}}
     </span>
     {% for tag in p.tags %}
-        <a href="/?tag={{ tag }}">{{tag}}</a>
+        <a href="/?tag={{ tag }}">#{{tag}}</a>
     {% endfor %}
 </p>
 {%endif %}
