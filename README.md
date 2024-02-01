@@ -56,6 +56,8 @@ Date (Y-m-d H:M)
 :post,:hide,:anycategory,:commaseparatedbutprefixed
 Your text, can be **Markdown**.
 <!-- Add a newline at the end -->
+```
+
 ## License
 
 AGPLv3
