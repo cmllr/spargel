@@ -27,6 +27,22 @@
 - Build with `rustc 1.77.0-nightly` or later.
 - Build with `cargo build`
 
+## Setup 
+
+Make sure the folders `posts` and `static` are present besides the spargel binary.
+
+```
+{
+    "title": "My title",
+    "sub_title": "A good subtitle",
+    "meta": {
+        "SomeMetaKey": "ThisIsOptional"
+    },
+    "url": "https://yoururlwithouttrailingslash.example.tld"
+}
+
+```
+
 ## Post Syntax
 
 > Everything is a post. Also pages. Except when not.
