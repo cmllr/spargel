@@ -25,11 +25,16 @@ pub struct Post {
     pub date: i64,
     pub content: String,
     pub slug: String,
-    pub is_page: bool
+    pub is_page: bool,
+    pub tags: Vec<String>,
+    pub hide_from_robots: bool
 }
 
 impl Post {
     pub fn html(self) -> String {
         return markdown::to_html(self.content.as_str());
+    }
+    pub fn url(self) -> String {
+        return String::from(format!("/post/{}/{}", self.id, self.slug));
     }
 }

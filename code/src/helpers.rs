@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::structs::post::Post;
+use std::borrow::Borrow;
 use std::fs;
 use std::io;
 use std::os::unix::ffi::OsStrExt;
@@ -27,6 +28,7 @@ extern crate slugify;
 use chrono::format;
 use chrono::NaiveDate;
 use chrono::NaiveDateTime;
+use indexmap::map::raw_entry_v1;
 use slugify::slugify;
 
 fn read_dir_sorted<P: AsRef<Path>>(path: P) -> Result<Vec<fs::DirEntry>, io::Error> {
@@ -55,7 +57,27 @@ pub fn get_posts() -> Vec<Post> {
             let parsed_date: NaiveDateTime =
                 NaiveDateTime::parse_from_str(&raw_date, "%Y-%m-%d %H:%M").unwrap();
             let mut content = String::new();
-            let is_page: bool = raw_content.lines().skip(2).next().unwrap().to_string() == "page";
+            let raw_tags = raw_content.lines().skip(2).next().unwrap().to_string();
+            let raw_tags_vec: Vec<&str> = raw_tags.split(",").collect();
+            let mut tags: Vec<String> = Vec::new();
+            let mut hide_from_bots: bool = false;
+            let mut is_page: bool = false;
+            for raw_tag in raw_tags_vec {
+                let raw_tag_string = raw_tag.to_string();
+                let stripped_tag = raw_tag_string.trim().to_string().replace(":", "");
+                if stripped_tag == "hide" {
+                    hide_from_bots = true;
+                }
+                else if stripped_tag == "page" {
+                    is_page = true;
+                } else if stripped_tag == "post" {
+                    /* do nothing as the default is post */
+                } else {
+                    tags.push(stripped_tag.to_string());
+                }
+            }
+
+
             for line in raw_content.lines().skip(3) {
                 content.push_str(format!("{}\n", line).as_str());
             }
@@ -67,7 +89,9 @@ pub fn get_posts() -> Vec<Post> {
                 date: parsed_date.timestamp(),
                 content: content,
                 slug: slug,
-                is_page: is_page
+                is_page: is_page,
+                tags: tags,
+                hide_from_robots: hide_from_bots
             };
             posts.push(post);
         }

@@ -31,9 +31,26 @@ mod feed;
 mod helpers;
 mod structs;
 
-#[get("/?<page>")]
-fn index(blog_context: &State<structs::blog::Blog>, page: Option<usize>) -> Template {
+#[get("/robots.txt")] 
+fn robots_txt() -> String {
+    let mut robots_content = String::from("User-Agent: *\n");
     let posts = helpers::get_posts();
+    let hidden_posts: Vec<Post> = posts.iter().filter(|p| p.hide_from_robots).cloned().collect();
+
+    for post in hidden_posts {
+        robots_content.push_str(format!("Disallow: {}\n", post.url()).as_str());
+    }
+    
+    return robots_content;
+}
+
+#[get("/?<tag>&<page>")]
+fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, page: Option<usize>) -> Template {
+    let mut posts = helpers::get_posts();
+    if tag.is_some() {
+        let tag_value = tag.unwrap();
+        posts = posts.iter().filter(|p| p.tags.contains(&tag_value)).cloned().collect();
+    }
     let all_pages: Vec<Post> = posts.iter().filter(|p| p.is_page).cloned().collect();
     let all_posts: Vec<Post> = posts.iter().filter(|p| !p.is_page).cloned().collect();
     let total_items_count: usize = all_posts.len();
@@ -101,6 +118,6 @@ fn rocket() -> _ {
     rocket::build()
         .attach(Template::fairing())
         .mount("/static", FileServer::from("./static"))
-        .mount("/", routes![index, post, feed_url])
+        .mount("/", routes![index, post, feed_url, robots_txt])
         .manage(blog_context)
 }

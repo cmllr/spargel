@@ -6,6 +6,9 @@
     <span>
         📎 {{p.date | date}}
     </span>
+    {% for tag in p.tags %}
+        <a href="/?tag={{ tag }}">{{tag}}</a>
+    {% endfor %}
 </p>
 <blockquote>
     <p>
