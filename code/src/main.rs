@@ -66,7 +66,8 @@ fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, page: O
             sub_title:  blog_context.sub_title.to_owned(),
             pagination: pagination,
             meta: blog_context.meta.clone(),
-            all_pages: all_pages
+            all_pages: all_pages,
+            url: blog_context.url.to_owned(),
         },
     )
 }
@@ -84,6 +85,7 @@ fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String) ->
             sub_title:  blog_context.sub_title.to_owned(),
             p: post.clone(),
             meta: blog_context.meta.clone(),
+            url: blog_context.url.to_owned(),
             html: post.html(),
             all_pages: all_pages
         },

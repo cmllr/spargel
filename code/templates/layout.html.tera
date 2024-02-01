@@ -5,9 +5,11 @@
     {% for key, value in meta %}
     <meta name="{{key}}" value="{{value}}"/>
     {% endfor %}
-    {% block head %}
+{% block head %}
     <title>{{title}}</title>
-    {% endblock head %}
+    <meta property="og:title" content="{{title}}" />
+    <meta property="og:url" content="{{url|safe}}" />
+{% endblock head %}
      <style>
         :root {
             --global-font-size: 15px;

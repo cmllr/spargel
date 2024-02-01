@@ -1,17 +1,34 @@
 
-<h3>
-<a href="/post/{{ p.id }}/{{ p.slug }}">{{p.title}}</a>
-</h3>
-<p class="post-meta">
-    <span>
-        📎 {{p.date | date}}
-    </span>
-</p>
-<blockquote>
-    <p>
-      {{p.content| truncate(length=10, end="...")}}
-    </p>
-</blockquote> 
-<div class="post-meta">
 
+
+<div class="terminal-media">
+    <div class="terminal-media-left">
+        {% if p.image %} 
+                <div class="terminal-avatarholder"><img width="50" height="50" src="{{p.image}}"></div>
+
+        {% else %}
+                <div class="terminal-avatarholder"><img width="50" height="50"></div>
+        {% endif %}
+    </div>
+    <div class="terminal-media-body">
+        <div class="terminal-media-heading">
+        <h3 class="post-title">
+            <a href="/post/{{ p.id }}/{{ p.slug }}">{{p.title}}</a>
+        </h3>
+        </div>
+        <div class="terminal-media-content post-meta">
+            <span>
+                📎 {{p.date | date}}
+            </span>
+
+            {% for tag in p.tags %}
+            <span>
+                <a href="/?tag={{ tag }}">{{tag}}</a>
+            </span>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <div class="post-excempt">{{p.content| truncate(length=10, end="...")}}</div>
 </div>

@@ -1,8 +1,9 @@
 
-<h3>
+<h3 class="post-title">
 <a href="/post/{{ p.id }}/{{ p.slug }}">{{p.title}}</a>
 </h3>
-<p class="post-meta">
+{% if not p.is_page %}
+<p class="post-meta-full">
     <span>
         📎 {{p.date | date}}
     </span>
@@ -10,6 +11,7 @@
         <a href="/?tag={{ tag }}">{{tag}}</a>
     {% endfor %}
 </p>
+{%endif %}
 <blockquote>
     <p>
       {{html|safe}}

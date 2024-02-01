@@ -22,6 +22,7 @@ use std::fs;
 use std::io;
 use std::os::unix::ffi::OsStrExt;
 use std::path::Path;
+use std::ptr;
 use std::time::UNIX_EPOCH;
 
 extern crate slugify;
@@ -82,8 +83,7 @@ pub fn get_posts() -> Vec<Post> {
                 content.push_str(format!("{}\n", line).as_str());
             }
             let slug = slugify!(&title.clone().as_str());
-
-            let post = Post {
+            let mut post = Post {
                 id: id,
                 title: title,
                 date: parsed_date.timestamp(),
@@ -91,8 +91,14 @@ pub fn get_posts() -> Vec<Post> {
                 slug: slug,
                 is_page: is_page,
                 tags: tags,
-                hide_from_robots: hide_from_bots
+                hide_from_robots: hide_from_bots,
+                image: String::new()
             };
+            let images: Vec<String> = post.clone().images();
+            if images.len() > 0 {
+                let image: &String = images.get(0).unwrap();
+                post.image = image.to_string();
+            }
             posts.push(post);
         }
     }

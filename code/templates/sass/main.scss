@@ -25,11 +25,26 @@ body {
 
     .footer {
         text-align: center;
+        margin-bottom: 1em;
     }
-
-    .post-meta {
+    .post-title {
+        margin-bottom: 0px !important;
+    }
+    .post-meta,
+    .post-meta-full {
         font-style: italic;
         font-size: small;
+    }
+    .post-meta-full {
+        /* post page */
+        margin-top: 1em;
+    }
+
+    .pagination {
+        text-align: center;
+    }
+    .post-excempt {
+        margin-top: 1rem;
     }
 }
 

@@ -1,3 +1,4 @@
+<div class="container pagination">
 {% if pagination.has_prev %}
 <a href="/?page={{pagination.cur_page - 1}}">  zurück </a>
 {% endif %}
@@ -5,3 +6,4 @@
 {% if pagination.has_next %}
 <a href="/?page={{pagination.cur_page + 1}}"> weiter </a>
 {% endif %}
+</div>

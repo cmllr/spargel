@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use serde::{Deserialize, Serialize};
+use regex::Regex;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Post {
@@ -27,7 +28,8 @@ pub struct Post {
     pub slug: String,
     pub is_page: bool,
     pub tags: Vec<String>,
-    pub hide_from_robots: bool
+    pub hide_from_robots: bool,
+    pub image: String
 }
 
 impl Post {
@@ -35,6 +37,16 @@ impl Post {
         return markdown::to_html(self.content.as_str());
     }
     pub fn url(self) -> String {
+        /* TODO: The URL must be injected into the template, also */
         return String::from(format!("/post/{}/{}", self.id, self.slug));
+    }
+    pub fn images(self) -> Vec<String> {
+        let haystack = self.html();
+        let re = Regex::new(r#"img src\s{0,}=\s{0,}("|')([^("|')]+)"#).unwrap();
+        let mut results = vec![];
+        for (_, [_, image_url]) in re.captures_iter(haystack.as_str()).map(|c| c.extract()) {
+            results.push(image_url.to_string());
+        }
+        return results;
     }
 }

@@ -3,3 +3,14 @@
 
 {% include "partials/post" %}
 {% endblock content %}
+
+
+
+{% block head %}
+<title>{{p.title}} - {{title}}</title>
+<meta property="og:title" content="{{p.title}} - {{title}}" />
+<meta property="og:url" content="{{url|safe}}/{{p.id}}/{{p.slug}}" />
+{% if p.image %}
+    <meta property="og:image" content="{{p.image|safe}}" />
+{%endif %}
+{% endblock head %}

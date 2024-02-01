@@ -2109,6 +2109,7 @@ dependencies = [
  "indexmap 2.2.1",
  "markdown",
  "md5",
+ "regex",
  "rocket 0.5.0",
  "rocket_contrib",
  "rocket_dyn_templates",
