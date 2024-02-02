@@ -2,7 +2,7 @@
 
 > THE blog engine nobody asked for!
 
-![design/logo.png](design/logo.png)
+![design/logo_small.png](design/logo_small.png)
 
 ## Features
 
