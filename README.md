@@ -2,9 +2,7 @@
 
 > THE blog engine nobody asked for!
 
-![logo.jpg](logo.jpg)
-
-(Img: https://commons.wikimedia.org/wiki/Category:Asparagus_officinalis#/media/File:20180428Asparagus_officinalis1.jpg)
+![design/logo.png](design/logo.png)
 
 ## Features
 
