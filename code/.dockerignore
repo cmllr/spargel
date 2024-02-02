@@ -1,0 +1,4 @@
+./posts/*
+./static/*
+./target/*
+./blog.json

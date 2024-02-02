@@ -16,6 +16,7 @@ slugify = "0.1.0"
 rss = "2.0"
 markdown = "1.0.0-alpha.16"
 regex = "1.10.3"
+rand = "0.8.5"
 
 [dependencies.rocket_dyn_templates]
 version = "0.1.0"

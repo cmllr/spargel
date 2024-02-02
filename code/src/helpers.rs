@@ -92,7 +92,9 @@ pub fn get_posts() -> Vec<Post> {
                 is_page: is_page,
                 tags: tags,
                 hide_from_robots: hide_from_bots,
-                image: String::new()
+                image: String::new(),
+                path: full_file_path.into_os_string().into_string().unwrap(),
+                raw_content: raw_content
             };
             let images: Vec<String> = post.clone().images();
             if images.len() > 0 {

@@ -1,6 +1,8 @@
 <section>
+    {% if is_edit_mode %}
+        <a class="new-post-link" href="/post/new/new?token={{token}}">🆕</a>
+    {% endif %}
     {% for p in pagination.items %}
         {% include "partials/post_excempt" %}
     {% endfor %}
-
 </section>

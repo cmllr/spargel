@@ -29,7 +29,9 @@ pub struct Post {
     pub is_page: bool,
     pub tags: Vec<String>,
     pub hide_from_robots: bool,
-    pub image: String
+    pub image: String,
+    pub path: String,
+    pub raw_content: String
 }
 
 impl Post {

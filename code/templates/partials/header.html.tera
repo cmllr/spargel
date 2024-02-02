@@ -1,10 +1,7 @@
 <div class="terminal-nav">
     <header class="terminal-logo">
       <div class="logo terminal-prompt">
-        <a href="/" class="no-style">{{ title }}</a>
-
-            
-      
+        <a href="/{% if is_edit_mode %}?token={{token}}{% endif%}" class="no-style">{{ title }}</a>
       </div>
 
     </header>
