@@ -1,8 +1,23 @@
 FROM rustlang/rust:nightly as builder
 ADD . /spargel
 WORKDIR /spargel
-RUN cargo build --release
+RUN cargo build --release --locked && cp ./target/release/spargel /bin/spargel
 
-FROM alpine:latest
-COPY --from=builder /spargel/target/spargel /spargel
-CMD ["/spargel"]
+FROM debian:bullseye-slim AS final
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+RUN mkdir /spargel
+USER appuser
+
+COPY --from=builder /bin/spargel /bin/
+ADD templates /spargel/templates
+EXPOSE 8000
+WORKDIR /spargel
+CMD ["/bin/spargel"]
