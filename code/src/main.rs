@@ -21,18 +21,20 @@ extern crate rocket;
 extern crate chrono;
 extern crate rand;
 
-use std::fs;
 use rand::distributions::{Alphanumeric, DistString};
-use std::{fs::File, io::Read};
-use rocket::form::Form;
-use rocket::{fs::FileServer, response::Redirect};
+use rocket::{data::ToByteUnit, fs::TempFile, http::ContentType, response::Redirect};
+use std::{fs::{self, File}, io::Read, path::Path};
+use rocket::fs::FileServer;
 use rocket::State;
 use rocket_dyn_templates::{context, Template};
 use structs::post::Post;
+use rocket::form::Form;
+use uuid::Uuid;
 
 mod feed;
 mod helpers;
 mod structs;
+
 
 #[get("/robots.txt")] 
 fn robots_txt() -> String {
@@ -83,16 +85,60 @@ fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, page: O
     )
 }
 
+
 #[derive(FromForm)]
 struct EditInput {
     path: String,
     raw_content: String,
     return_to: String,
-    submit: String
+    submit: String,
 }
 
-#[post("/post/<id>/<_slug>?<token>", data="<edit_input>")]
-fn edit_post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String, token: String, edit_input: Form<EditInput>) -> Redirect {
+use rocket::Data;
+#[post("/media?<token>&<size>&<name>", data = "<paste>")]
+async fn media_upload(blog_context: &State<structs::blog::Blog>, token: String, size: u64, name: String, paste: Data<'_>) -> Redirect {
+    // Check token
+    if token != blog_context.token {
+        return Redirect::to("/");
+    }
+    let path = Path::new("./uploads").join(name);
+    let _ = paste.open(size.kibibytes()).into_file(path).await;
+    return Redirect::to("/media");
+}
+
+#[get("/media?<token>")]
+fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -> Template {
+    let mut media_contents: Vec<String> = Vec::new();
+    let paths = fs::read_dir("./uploads").unwrap();
+    for path in paths {
+        let file = path.unwrap();
+        let name = file.file_name().to_str().unwrap().to_string();
+        let url = format!("{}/uploads/{}", blog_context.url, name);
+        media_contents.push(url)
+    }
+    let mut is_token_present = false;
+    match token {
+        Some(inner) => is_token_present = blog_context.token == inner,
+        None => {}
+    }
+    Template::render(
+        "media",
+        context! {
+            title: blog_context.title.to_owned(),
+            sub_title:  blog_context.sub_title.to_owned(),
+            meta: blog_context.meta.clone(),
+            url: blog_context.url.to_owned(),
+            token: blog_context.token.to_owned(),
+            is_token_present: is_token_present,
+            media_contents: media_contents
+        },
+    )
+}
+
+
+
+#[post("/post/<_id>/<_slug>?<token>", data="<edit_input>")]
+fn edit_post(blog_context: &State<structs::blog::Blog>, _id: String, _slug: String, token: String, edit_input: Form<EditInput>) -> Redirect {
     // Check token
     if token != blog_context.token {
         return Redirect::to("/");
@@ -107,17 +153,19 @@ fn edit_post(blog_context: &State<structs::blog::Blog>, id: String, _slug: Strin
     let raw_content = edit_input.raw_content.to_owned();
     let return_to = edit_input.return_to.to_owned();
     fs::write(path, raw_content);
+    //print!("{:?}", edit_input.file.unwrap());
+  
     return Redirect::to(return_to);
 }
 #[get("/post/<id>/<_slug>?<token>")]
 fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String, token: Option<String>) -> Template {
-    let mut is_edit_mode = false;
+    let is_edit_mode;
     match token {
         Some(inner)   => is_edit_mode = blog_context.token == inner,
         None          => is_edit_mode = false,
     }
 
-    let mut post: Post;
+    let post: Post;
     let posts = helpers::get_posts();
 
     let all_pages: Vec<Post> = posts.iter().filter(|p| p.is_page).cloned().collect();
@@ -197,6 +245,7 @@ fn rocket() -> _ {
     rocket::build()
         .attach(Template::fairing())
         .mount("/static", FileServer::from("./static"))
-        .mount("/", routes![index, post, edit_post, feed_url, robots_txt])
+        .mount("/uploads", FileServer::from("./uploads"))
+        .mount("/", routes![index, post, edit_post, feed_url, robots_txt, media_upload, media])
         .manage(blog_context)
 }

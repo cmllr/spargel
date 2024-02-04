@@ -17,19 +17,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::structs::post::Post;
-use std::borrow::Borrow;
 use std::fs;
 use std::io;
 use std::os::unix::ffi::OsStrExt;
 use std::path::Path;
-use std::ptr;
-use std::time::UNIX_EPOCH;
 
 extern crate slugify;
-use chrono::format;
-use chrono::NaiveDate;
 use chrono::NaiveDateTime;
-use indexmap::map::raw_entry_v1;
 use slugify::slugify;
 
 fn read_dir_sorted<P: AsRef<Path>>(path: P) -> Result<Vec<fs::DirEntry>, io::Error> {

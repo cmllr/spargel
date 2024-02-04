@@ -1,0 +1,46 @@
+{% if is_token_present %}
+<form action="" method="post" enctype="application/x-www-form-urlencoded">
+  <input type="file" name="file">
+  <input class="btn btn-primary btn-ghost" name="upload-submit" type="submit" value="submit" />
+</form>
+
+{% endif %}
+<section>
+    <div class="image-grid">
+      {% for entry in media_contents %}
+      <a class="upload-url-copy" href="#" data-href="{{entry}}" style="border: none;"><img src="{{entry}}"></a>
+      {% endfor %}
+    </div>
+{% if is_token_present %}
+<script>
+  var token = "{{token}}";
+  function upload() {
+    var input = document.querySelector("input[type='file']")
+    var file = input.files[0];
+
+    console.log(`File name: ${file.name}`); // e.g my.png
+    console.log(file); // e.g 1552830408824
+    fetch(
+      `/media?token=${token}&size=${file.size}&name=${file.name}`,
+      {
+        method: "POST",
+        body: file
+      }
+    ).then(() => {
+      window.location.reload();
+    })
+  }
+
+  document.querySelector("input[name='upload-submit']").addEventListener("click", function (e) {
+    e.preventDefault();
+    upload();
+  })
+
+  document.querySelectorAll("a.upload-url-copy").forEach(el => el.addEventListener("click", function (e) {
+    e.preventDefault();
+    var url = el.getAttribute("data-href");
+    navigator.clipboard.writeText(`\n![${url}](${url})`)
+  }));
+</script>
+
+{% endif %}

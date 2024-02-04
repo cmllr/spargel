@@ -3,6 +3,8 @@
 
     <input type="hidden" value="/post/{{p.id}}/{{p.slug}}?token={{token}}" name="return_to">
     <textarea name="raw_content" rows="30">{{p.raw_content}}</textarea>
+    <h2 class="media-files-header">Media files</h2>
+    <iframe class="media" src="/media?token={{token}}"></iframe>
     <div class="editor-actions">
         <div class="btn-group">
             <input class="btn btn-primary btn-ghost" name="submit" type="submit" value="submit" />
