@@ -1,8 +1,6 @@
 
 <div class="footer">
 <hr/>
-    Powered by Spargel (<a href="https://github.com/cmllr/spargel" target="_blank">wtf?</a>) 
-    | 
 <a href="/feed">RSS</a>
 {% for page in all_pages %}
 | <a href="/post/{{page.id}}/{{page.slug}}">{{page.title}}</a>

@@ -54,9 +54,10 @@ pub fn get_feed(context: Blog, items: Vec<Post>) -> FeedResponse{
         .build();
     let mut raw_items: Vec<Item> = Vec::new();
     for post in items {
+        let post_content = post.clone().html();
         let p = ItemBuilder::default()
         .title(post.title)
-        .content(post.content)
+        .content(Some(post_content))
         .link(format!("{}/post/{}/{}", context.url, post.id, post.slug))
         .build();
         raw_items.push(p);
