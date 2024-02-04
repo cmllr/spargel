@@ -10,9 +10,11 @@
       {% for entry in media_contents %}
       <figure class="upload-url-copy" >
         <a href="#" class="upload-url-copy-link" data-href="{{entry}}" style="border: none;"><img src="{{entry}}"></a>
+        {% if is_token_present %}
         <figcaption>    
           <a  href="{{entry | replace(from='uploads', to='delete')}}?token={{token}}" style="border: none;">Delete</a>
         </figcaption>
+        {% endif %}
       </figure>
        {% endfor %}
     </div>
