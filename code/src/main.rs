@@ -22,14 +22,13 @@ extern crate chrono;
 extern crate rand;
 
 use rand::distributions::{Alphanumeric, DistString};
-use rocket::{data::ToByteUnit, fs::TempFile, http::ContentType, response::Redirect};
+use rocket::{data::ToByteUnit, response::Redirect};
 use std::{fs::{self, File}, io::Read, path::Path};
 use rocket::fs::FileServer;
 use rocket::State;
 use rocket_dyn_templates::{context, Template};
 use structs::post::Post;
 use rocket::form::Form;
-use uuid::Uuid;
 
 mod feed;
 mod helpers;
@@ -110,11 +109,18 @@ async fn media_upload(blog_context: &State<structs::blog::Blog>, token: String, 
 fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -> Template {
     let mut media_contents: Vec<String> = Vec::new();
     let paths = fs::read_dir("./uploads").unwrap();
+    let allowed_ext = vec![".png", ".jpeg", ".gif", ".jpg"];
     for path in paths {
+        // TODO: Only include "real" media files
         let file = path.unwrap();
-        let name = file.file_name().to_str().unwrap().to_string();
-        let url = format!("{}/uploads/{}", blog_context.url, name);
-        media_contents.push(url)
+        if file.metadata().unwrap().is_file() {
+            // Only proceed for real files
+            let name = file.file_name().to_str().unwrap().to_string();
+            if allowed_ext.iter().any(|&s| name.ends_with(s)) {
+                let url = format!("{}/uploads/{}", blog_context.url, name);
+                media_contents.push(url)
+            }
+        }
     }
     let mut is_token_present = false;
     match token {
@@ -136,6 +142,22 @@ fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -> Te
 }
 
 
+#[get("/delete/<file>?<token>")]
+fn media_delete(blog_context: &State<structs::blog::Blog>, file: String, token: String) -> Redirect {
+    let path = Path::new("./uploads").join(file);
+    if token != blog_context.token {
+        return Redirect::to("/");
+    }
+    if path.exists() {
+        let success = std::fs::remove_file(path);
+        if success.is_err() {
+            //TODO: handle error
+            return Redirect::to("/");
+        }
+    }
+    return Redirect::to(format!("/media?token={}", token));
+}
+
 
 #[post("/post/<_id>/<_slug>?<token>", data="<edit_input>")]
 fn edit_post(blog_context: &State<structs::blog::Blog>, _id: String, _slug: String, token: String, edit_input: Form<EditInput>) -> Redirect {
@@ -146,17 +168,25 @@ fn edit_post(blog_context: &State<structs::blog::Blog>, _id: String, _slug: Stri
     let path = edit_input.path.to_owned();
     let submit = edit_input.submit.to_owned();
     if submit == "delete" {
-        fs::remove_file(path);
+        let success = fs::remove_file(path);
+        if success.is_err() {
+            // TODO: error handling
+            return Redirect::to(format!("/"));
+        }
         return Redirect::to(format!("/?token={}", blog_context.token));
     }
     // TODO: Check path
     let raw_content = edit_input.raw_content.to_owned();
     let return_to = edit_input.return_to.to_owned();
-    fs::write(path, raw_content);
+    let write_success = fs::write(path, raw_content);
     //print!("{:?}", edit_input.file.unwrap());
-  
+    if write_success.is_err() {
+        // TODO: error handling
+        return Redirect::to(format!("/"));
+    }
     return Redirect::to(return_to);
 }
+
 #[get("/post/<id>/<_slug>?<token>")]
 fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String, token: Option<String>) -> Template {
     let is_edit_mode;
@@ -246,6 +276,6 @@ fn rocket() -> _ {
         .attach(Template::fairing())
         .mount("/static", FileServer::from("./static"))
         .mount("/uploads", FileServer::from("./uploads"))
-        .mount("/", routes![index, post, edit_post, feed_url, robots_txt, media_upload, media])
+        .mount("/", routes![index, post, edit_post, feed_url, robots_txt, media_upload, media, media_delete])
         .manage(blog_context)
 }
