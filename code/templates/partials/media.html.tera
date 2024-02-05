@@ -23,10 +23,9 @@
   var token = "{{token}}";
   function upload() {
     var input = document.querySelector("input[type='file']")
+    var form = document.querySelector(".upload-media");
     var file = input.files[0];
-
-    console.log(`File name: ${file.name}`); // e.g my.png
-    console.log(file); // e.g 1552830408824
+    form.classList.toggle("hidden");
     fetch(
       `/media?token=${token}&size=${file.size}&name=${file.name}`,
       {
@@ -35,7 +34,9 @@
       }
     ).then(() => {
       window.location.reload();
-    })
+    }).finally(() => {
+      form.classList.toggle("hidden");
+    });
   }
 
   document.querySelector("input[name='upload-submit']").addEventListener("click", function (e) {

@@ -1,0 +1,19 @@
+dev
+
+🐛 bug fixes
+
+- Fixed an issue causing the feed to not display the post content as HTML
+
+🆕 features
+
+- Add file upload/ delete
+- Add insert of images into posts
+- Added post tags
+- Add image post preview
+- Removed meta[name='generator'] tag
+- Add image resizing on upload
+
+
+0.1.0
+
+- Added Dockerfile for initial deployment
