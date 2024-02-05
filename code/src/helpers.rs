@@ -102,3 +102,12 @@ pub fn get_posts() -> Vec<Post> {
     posts.sort_by(|a, b| b.date.cmp(&a.date));
     return posts;
 }
+
+
+/// Check if a filename ends with the desired extension
+/// 
+/// The mimetype of the actual file is NOT checked.
+pub fn is_ext_allowed(filename: String) -> bool{
+    let allowed_ext = vec![".png", ".jpeg", ".gif", ".jpg"];
+    return allowed_ext.iter().any(|&s| filename.ends_with(s));
+}

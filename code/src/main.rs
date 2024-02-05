@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 extern crate rocket;
 extern crate chrono;
 extern crate rand;
+extern crate image;
 
 use rand::distributions::{Alphanumeric, DistString};
 use rocket::{data::ToByteUnit, response::Redirect};
@@ -29,6 +30,7 @@ use rocket::State;
 use rocket_dyn_templates::{context, Template};
 use structs::post::Post;
 use rocket::form::Form;
+use image::GenericImageView;
 
 mod feed;
 mod helpers;
@@ -100,8 +102,30 @@ async fn media_upload(blog_context: &State<structs::blog::Blog>, token: String, 
     if token != blog_context.token {
         return Redirect::to("/");
     }
-    let path = Path::new("./uploads").join(name);
-    let _ = paste.open(size.kibibytes()).into_file(path).await;
+    // TODO: That protection ist just RIDICULOUSLY BAD
+
+    if helpers::is_ext_allowed(name.clone())
+    {
+        let path = Path::new("./uploads").join(name);
+        let _ = paste.open(size.kibibytes()).into_file(path.clone()).await;
+        let img = image::open(path.clone()).unwrap();
+        let dim = img.dimensions();
+        let (x, y) = dim;
+        // TODO: MAKE configuration
+        // Resize images larget than a desired width to prevent ridicoulous loading times
+        if x > 1024 {
+            let new_x = 1024;
+            let new_y = y/(x/new_x);
+            print!("Resizing to x={} and y={}", new_x, new_y);
+
+            let new_image = img.resize(new_x, new_y, image::imageops::FilterType::Lanczos3);
+            let _ = new_image.save(path.clone());
+        }
+    } else {
+        return Redirect::to("/");
+    }
+
+    // TODO: Scale down images wider than 1024
     return Redirect::to("/media");
 }
 
@@ -109,6 +133,7 @@ async fn media_upload(blog_context: &State<structs::blog::Blog>, token: String, 
 fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -> Template {
     let mut media_contents: Vec<String> = Vec::new();
     let paths = fs::read_dir("./uploads").unwrap();
+    // TODO: make global-ish
     let allowed_ext = vec![".png", ".jpeg", ".gif", ".jpg"];
     for path in paths {
         // TODO: Only include "real" media files
@@ -116,7 +141,8 @@ fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -> Te
         if file.metadata().unwrap().is_file() {
             // Only proceed for real files
             let name = file.file_name().to_str().unwrap().to_string();
-            if allowed_ext.iter().any(|&s| name.ends_with(s)) {
+            
+            if helpers::is_ext_allowed(name.clone()) {
                 let url = format!("{}/uploads/{}", blog_context.url, name);
                 media_contents.push(url)
             }
@@ -263,14 +289,7 @@ fn rocket() -> _ {
     file.read_to_string(&mut buff).unwrap();
 
     let mut blog_context: structs::blog::Blog = serde_json::from_str(&buff).unwrap();
-    blog_context.meta.insert(
-        String::from("generator"),
-        format!(
-            "{} {}",
-            option_env!("CARGO_PKG_NAME").unwrap(),
-            option_env!("CARGO_PKG_VERSION").unwrap()
-        ),
-    );
+   
 
     rocket::build()
         .attach(Template::fairing())
