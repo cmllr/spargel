@@ -17,6 +17,7 @@ USER appuser
 
 COPY --from=builder /bin/spargel /bin/
 ADD templates /spargel/templates
+ADD static /spargel/static
 ADD Rocket.toml /spargel/Rocket.toml
 EXPOSE 8000
 WORKDIR /spargel
