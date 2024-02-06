@@ -13,9 +13,7 @@
 - Robots.txt generation on the fly (in case you need to hide some posts from Crawlers)
 - Markdown support
 - KI based* image preview
-
-
-
+- File attachment upload and deletion
 
 ---
 *or maybe just "if"..who knows
@@ -55,6 +53,10 @@ Date (Y-m-d H:M)
 Your text, can be **Markdown**.
 <!-- Add a newline at the end -->
 ```
+
+## Is this production ready?
+
+Of course not!
 
 ## License
 
