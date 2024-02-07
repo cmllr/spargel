@@ -55,8 +55,9 @@ fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, page: O
     let mut posts = helpers::get_posts();
    
     let all_pages: Vec<Post> = posts.iter().filter(|p| p.is_page).cloned().collect();
+    let mut tag_value = String::from("index"); 
     if tag.is_some() {
-        let tag_value = tag.unwrap();
+        tag_value = tag.unwrap();
         posts = posts.iter().filter(|p| p.tags.contains(&tag_value)).cloned().collect();
     }
     let all_posts: Vec<Post> = posts.iter().filter(|p| !p.is_page).cloned().collect();
@@ -64,7 +65,7 @@ fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, page: O
     let current_site: usize = page.unwrap_or(1);
 
     let pagination =
-        structs::pagination::Pagination::get(total_items_count, current_site, all_posts);
+        structs::pagination::Pagination::get(total_items_count, current_site, all_posts, Some(tag_value));
     let mut is_edit_mode = false;
     if token.is_some() {
         if token.unwrap() == blog_context.token {

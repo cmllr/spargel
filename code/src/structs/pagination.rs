@@ -16,10 +16,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use std::{fs::{self, File}, io::Read, path::Path};
+use speedy::{Readable, Writable};
 use serde::{Deserialize, Serialize};
 use crate::structs::post;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Readable, Writable)]
 pub struct Pagination {
     pub has_next: bool,
     pub has_prev: bool,
@@ -30,7 +32,43 @@ pub struct Pagination {
 }
 
 impl Pagination{
-    pub fn get(total_items_count: usize, current_site: usize, items: Vec<post::Post>) -> Pagination {
+    fn is_pickled(page_slug: Option<String>, page: usize) -> bool {
+        let page: usize = page;
+        let slug: String = page_slug.unwrap();
+        if slug.len() > 0 {
+            let path = Path::new("./cache").join(format!("{}_{}.bin", slug, page));
+            return path.exists();
+        }
+        return false;
+    }
+    fn pickle(result: Pagination, page_slug: Option<String>){
+        let slug: String = page_slug.unwrap();
+        let page: usize = result.cur_page;
+        if slug.len() > 0 {
+            // Only continue if there is a slug provided
+            let path = Path::new("./cache").join(format!("{}_{}.bin", slug, page));
+            let bytes = result.write_to_vec().unwrap();
+            let _ = fs::write(path, bytes);
+        }
+    }
+    fn unpickle(page_slug: Option<String>, page: usize) -> Pagination{
+        // Only continue if there is a slug provided
+        let path = Path::new("./cache").join(format!("{}_{}.bin", page_slug.unwrap(), page));
+        let mut f = File::open(path.clone()).expect("no file found");
+        let metadata = fs::metadata(path.to_owned().clone()).expect("Whoopsie");
+        let mut buffer = vec![0; metadata.len() as usize];
+        f.read(&mut buffer).expect("buffer overflow");
+
+        let deserialized: Pagination =
+        Pagination::read_from_buffer( &buffer ).unwrap();
+        return deserialized
+    }
+    pub fn get(total_items_count: usize, current_site: usize, items: Vec<post::Post>, page_slug: Option<String>) -> Pagination {
+        // If the named page with the current page was already pickled -> remove the unpickled one instead of querying again
+        if Pagination::is_pickled(page_slug.clone(), current_site) {
+            let got =  Pagination::unpickle(page_slug.clone(), current_site);
+            return got;
+        }
 
         let post_per_page: usize = 8;
     
@@ -58,13 +96,17 @@ impl Pagination{
                 }
             }
         }
-        return Pagination {
+        let result: Pagination = Pagination {
             has_next: has_next,
             has_prev: has_prev,
             item_count: all_pages,
             cur_page: current_site,
             all_pages: all_pages_count_with_incomplete,
             items: paginated_items
+        };
+        if page_slug.to_owned().clone().is_some() {
+            Pagination::pickle(result.clone(), page_slug);
         }
+        return result;
     }
 }
