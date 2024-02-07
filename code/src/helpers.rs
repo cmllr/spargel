@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::structs::post::Post;
+use std::env;
 use std::fs;
 use std::io;
 use std::os::unix::ffi::OsStrExt;
@@ -35,8 +36,8 @@ fn read_dir_sorted<P: AsRef<Path>>(path: P) -> Result<Vec<fs::DirEntry>, io::Err
 pub fn get_posts() -> Vec<Post> {
     let mut posts: Vec<Post> = Vec::new();
 
-    let post_folder = "./posts";
-    let post_files = read_dir_sorted(post_folder).unwrap();
+    let post_folder = Path::new(&env::current_dir().unwrap()).join("posts");
+    let post_files = read_dir_sorted(post_folder.clone()).unwrap();
 
     for file in post_files {
         let full_file_path = Path::new(&post_folder).join(file.file_name());
