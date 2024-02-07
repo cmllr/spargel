@@ -134,7 +134,6 @@ fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -> Te
     let mut media_contents: Vec<String> = Vec::new();
     let paths = fs::read_dir("./uploads").unwrap();
     // TODO: make global-ish
-    let allowed_ext = vec![".png", ".jpeg", ".gif", ".jpg"];
     for path in paths {
         // TODO: Only include "real" media files
         let file = path.unwrap();
@@ -288,7 +287,7 @@ fn rocket() -> _ {
     let mut buff = String::new();
     file.read_to_string(&mut buff).unwrap();
 
-    let mut blog_context: structs::blog::Blog = serde_json::from_str(&buff).unwrap();
+    let blog_context: structs::blog::Blog = serde_json::from_str(&buff).unwrap();
    
 
     rocket::build()
