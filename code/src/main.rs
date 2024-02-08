@@ -28,7 +28,7 @@ use std::{fs::{self, File}, io::Read, path::Path};
 use rocket::fs::FileServer;
 use rocket::State;
 use rocket_dyn_templates::{context, Template};
-use structs::post::Post;
+use structs::{pagination::Pagination, post::Post};
 use rocket::form::Form;
 use image::GenericImageView;
 
@@ -52,25 +52,17 @@ fn robots_txt() -> String {
 
 #[get("/?<tag>&<page>&<token>")]
 fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, page: Option<usize>, token: Option<String>) -> Template {
-    let mut posts = helpers::get_posts();
-   
-    let all_pages: Vec<Post> = posts.iter().filter(|p| p.is_page).cloned().collect();
-    if tag.is_some() {
-        let tag_value = tag.unwrap();
-        posts = posts.iter().filter(|p| p.tags.contains(&tag_value)).cloned().collect();
-    }
-    let all_posts: Vec<Post> = posts.iter().filter(|p| !p.is_page).cloned().collect();
-    let total_items_count: usize = all_posts.len();
-    let current_site: usize = page.unwrap_or(1);
 
+    let current_site: usize = page.unwrap_or(1);
     let pagination =
-        structs::pagination::Pagination::get(total_items_count, current_site, all_posts);
+        structs::pagination::Pagination::get(current_site, tag);
     let mut is_edit_mode = false;
     if token.is_some() {
         if token.unwrap() == blog_context.token {
             is_edit_mode = true;
         }
     }
+    let all_pages = pagination.pages.clone();
     Template::render(
         "index",
         context! {
@@ -209,6 +201,8 @@ fn edit_post(blog_context: &State<structs::blog::Blog>, _id: String, _slug: Stri
         // TODO: error handling
         return Redirect::to(format!("/"));
     }
+
+    Pagination::throw_away_all_pickles();
     return Redirect::to(return_to);
 }
 
@@ -289,6 +283,7 @@ fn rocket() -> _ {
 
     let blog_context: structs::blog::Blog = serde_json::from_str(&buff).unwrap();
    
+    Pagination::throw_away_all_pickles();
 
     rocket::build()
         .attach(Template::fairing())

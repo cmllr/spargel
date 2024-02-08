@@ -18,8 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use serde::{Deserialize, Serialize};
 use regex::Regex;
+use speedy::{Readable, Writable};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Clone, Readable, Writable)]
 pub struct Post {
     pub id: String,
     pub title: String,
