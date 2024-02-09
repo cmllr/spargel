@@ -25,7 +25,7 @@
 
 ## Setup 
 
-Make sure the folders `posts` and `static` are present besides the spargel binary.
+Make sure the folders `posts`, `cache` (both writable) and `static` are present besides the spargel binary.
 
 ```
 {
