@@ -19,7 +19,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use crate::{
     helpers,
     structs::post::{self, Post},
+    structs::blog::Blog
 };
+use rocket::State;
 use serde::{Deserialize, Serialize};
 use speedy::{Readable, Writable};
 use std::{
@@ -43,7 +45,7 @@ pub struct Pagination {
 
 impl Pagination {
     // Get all posts from the index pickle, if available
-    pub fn get_posts() -> Pagination {
+    pub fn get_posts(blog_context: &State<Blog>) -> Pagination {
         let slug_value: String = String::from("index");
         let is_pickled = Pagination::is_pickled(slug_value.clone(), 1);
         return match is_pickled {
@@ -51,7 +53,7 @@ impl Pagination {
                 Pagination::unpickle(slug_value, 1)
             },
             false => {
-                Pagination::get(1,Some(slug_value))
+                Pagination::get(blog_context, 1,Some(slug_value))
             }
         };
     }
@@ -104,7 +106,7 @@ impl Pagination {
         let deserialized: Pagination = Pagination::read_from_buffer(&buffer).unwrap();
         return deserialized;
     }
-    pub fn get(current_site: usize, tag: Option<String>) -> Pagination {
+    pub fn get(blog_context: &State<Blog>, current_site: usize, tag: Option<String>) -> Pagination {
         // If the named page with the current page was already pickled -> remove the unpickled one instead of querying again
 
         let slug_value: String = tag.clone().unwrap_or(String::from("index"));
@@ -113,7 +115,7 @@ impl Pagination {
             return got;
         }
 
-        let mut posts = helpers::get_posts();
+        let mut posts = helpers::get_posts(blog_context);
 
         let pages: Vec<Post> = posts.iter().filter(|p| p.is_page).cloned().collect();
         posts = posts

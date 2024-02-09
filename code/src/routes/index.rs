@@ -28,13 +28,15 @@ pub fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, pag
 
     let current_site: usize = page.unwrap_or(1);
     let pagination =
-        structs::pagination::Pagination::get(current_site, tag);
+        structs::pagination::Pagination::get(blog_context, current_site, tag);
     let mut is_edit_mode = false;
     if token.is_some() {
         if token.unwrap() == blog_context.token {
             is_edit_mode = true;
         }
     }
+
+  
     let all_pages = pagination.pages.clone();
     Template::render(
         "index",

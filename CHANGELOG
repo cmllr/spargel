@@ -2,6 +2,17 @@ dev
 
 🐛 bug fixes
 
+
+🆕 features
+
+- Add caching to further reduce load times
+- Add 404 error page
+- Add thumbnail generation
+
+0.2.0
+
+🐛 bug fixes
+
 - Fixed an issue causing the feed to not display the post content as HTML
 
 🆕 features

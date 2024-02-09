@@ -19,10 +19,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use rocket::State;
 use rocket_dyn_templates::{context, Template};
 
-use crate::{helpers, structs::{self, pagination::Pagination, post::Post}};
+use crate::{helpers, structs::{self, blog, pagination::Pagination, post::Post}};
 
 pub fn error(blog_context: &State<structs::blog::Blog>, status: usize) -> Template {
-    let pagination = Pagination::get_posts();
+    let pagination = Pagination::get_posts(blog_context);
     // TODO: Where to get posts? 
     
     let all_pages: Vec<Post> = pagination.pages;
@@ -42,9 +42,9 @@ pub fn error(blog_context: &State<structs::blog::Blog>, status: usize) -> Templa
 
 
 #[get("/robots.txt")] 
-pub fn robots_txt() -> String {
+pub fn robots_txt(blog_context: &State<structs::blog::Blog>) -> String {
     let mut robots_content = String::from("User-Agent: *\n");
-    let posts = helpers::get_posts();
+    let posts = helpers::get_posts(blog_context);
     let hidden_posts: Vec<Post> = posts.iter().filter(|p| p.hide_from_robots).cloned().collect();
 
     for post in hidden_posts {

@@ -26,7 +26,7 @@ use crate::structs::post::Post;
 
 #[get("/feed")]
 pub fn feed_url(blog_context: &State<structs::blog::Blog>) -> feed::FeedResponse {
-    let posts = helpers::get_posts();
+    let posts = helpers::get_posts(blog_context);
     let all_posts: Vec<Post> = posts.iter().filter(|p| !p.is_page).cloned().collect();
    
     let content = feed::get_feed(blog_context.inner().clone(), all_posts);

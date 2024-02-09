@@ -16,15 +16,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::structs::blog::Blog;
 use crate::structs::post::Post;
 use std::env;
 use std::fs;
 use std::io;
 use std::os::unix::ffi::OsStrExt;
 use std::path::Path;
+use std::path::PathBuf;
 
 extern crate slugify;
 use chrono::NaiveDateTime;
+use rocket::State;
 use slugify::slugify;
 
 fn read_dir_sorted<P: AsRef<Path>>(path: P) -> Result<Vec<fs::DirEntry>, io::Error> {
@@ -33,7 +36,7 @@ fn read_dir_sorted<P: AsRef<Path>>(path: P) -> Result<Vec<fs::DirEntry>, io::Err
     Ok(paths)
 }
 
-pub fn get_posts() -> Vec<Post> {
+pub fn get_posts(blog_context: &State<Blog>) -> Vec<Post> {
     let mut posts: Vec<Post> = Vec::new();
 
     let post_folder = Path::new(&env::current_dir().unwrap()).join("posts");
@@ -94,7 +97,14 @@ pub fn get_posts() -> Vec<Post> {
             let images: Vec<String> = post.clone().images();
             if images.len() > 0 {
                 let image: &String = images.get(0).unwrap();
-                post.image = image.to_string();
+                if image.starts_with(&blog_context.url) {
+                    let file_name = Path::new(image).file_name().unwrap().to_str().unwrap().to_string();
+                    let new_file_name = format!("thumb_{}", file_name);
+                    let image_thumb = image.to_string().replace(&file_name, &new_file_name);
+                    post.image = image_thumb;
+                } else {
+                    post.image = image.to_string();
+                }
             }
             posts.push(post);
         }

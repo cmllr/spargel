@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 
-{% include "partials/css" %}
     {% for key, value in meta %}
     <meta name="{{key}}" value="{{value}}"/>
     {% endfor %}
@@ -23,6 +22,7 @@
 </div>
 
 {% include "partials/footer" %}
+{% include "partials/css" %}
 </body>
 
 </html>

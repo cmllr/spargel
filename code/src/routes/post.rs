@@ -75,7 +75,7 @@ pub fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String
     }
 
     let post: Post;
-    let pagination = Pagination::get_posts();
+    let pagination = Pagination::get_posts(blog_context);
 
     let all_pages: Vec<Post> = pagination.pages.clone();
     if id  != "new" || !is_edit_mode {

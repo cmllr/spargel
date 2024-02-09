@@ -35,7 +35,7 @@ pub async fn media_upload(blog_context: &State<structs::blog::Blog>, token: Stri
 
     if helpers::is_ext_allowed(name.clone())
     {
-        let path = Path::new("./uploads").join(name);
+        let path = Path::new("./uploads").join(name.clone());
         let _ = paste.open(size.kibibytes()).into_file(path.clone()).await;
         let img = image::open(path.clone()).unwrap();
         let dim = img.dimensions();
@@ -50,6 +50,9 @@ pub async fn media_upload(blog_context: &State<structs::blog::Blog>, token: Stri
             let new_image = img.resize(new_x, new_y, image::imageops::FilterType::Lanczos3);
             let _ = new_image.save(path.clone());
         }
+        // Create a thumbnail on upload
+        let thumb_path = Path::new("./uploads").join(format!("thumb_{}", name));
+        let _ = img.thumbnail(64, 64).save(thumb_path);
     } else {
         return Redirect::to("/");
     }
