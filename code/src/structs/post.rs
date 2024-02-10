@@ -32,7 +32,8 @@ pub struct Post {
     pub hide_from_robots: bool,
     pub image: String,
     pub path: String,
-    pub raw_content: String
+    pub raw_content: String,
+    pub parsed_content: String
 }
 
 impl Post {

@@ -85,14 +85,15 @@ pub fn get_posts(blog_context: &State<Blog>) -> Vec<Post> {
                 id: id,
                 title: title,
                 date: parsed_date.timestamp(),
-                content: content,
+                content: content.clone(),
                 slug: slug,
                 is_page: is_page,
                 tags: tags,
                 hide_from_robots: hide_from_bots,
                 image: String::new(),
                 path: full_file_path.into_os_string().into_string().unwrap(),
-                raw_content: raw_content
+                raw_content: raw_content,
+                parsed_content: markdown::to_html(content.as_str())
             };
             let images: Vec<String> = post.clone().images();
             if images.len() > 0 {
