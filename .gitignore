@@ -1,6 +1,6 @@
 code/target/
 code/blog.json
 code/posts
-code/templates/sass/node_modules
+code/templates/terminal.css/sass/node_modules/
 code/uploads/*
 code/cache/*
