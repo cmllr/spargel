@@ -1,9 +1,9 @@
-{% extends "layout" %}
+{% extends "terminal.css/layout" %}
 {% block content %}
 {% if not is_edit_mode %}
-{% include "partials/post" %}
+{% include "terminal.css/partials/post" %}
 {% else %}
-{% include "partials/post_editor" %}
+{% include "terminal.css/partials/post_editor" %}
 {% endif %}
 {% endblock content %}
 

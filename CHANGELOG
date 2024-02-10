@@ -5,6 +5,7 @@ dev
 
 🆕 features
 
+- Add theme support
 - Add caching to further reduce load times
 - Add 404 error page
 - Add thumbnail generation

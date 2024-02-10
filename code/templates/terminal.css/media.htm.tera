@@ -1,0 +1,9 @@
+
+<head>
+{% include "terminal.css/partials/css" %}
+</head>
+<body class="full">
+
+
+{% include "terminal.css/partials/media" %}
+</div>

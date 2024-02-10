@@ -85,7 +85,7 @@ pub fn media(blog_context: &State<structs::blog::Blog>, token: Option<String>) -
         None => {}
     }
     Template::render(
-        "media",
+        format!("{}/media", blog_context.theme),
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),

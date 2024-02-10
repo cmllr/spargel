@@ -25,5 +25,6 @@ pub struct Blog {
     pub sub_title: String,
     pub meta: HashMap<String, String>,
     pub url: String,
-    pub token: String
+    pub token: String,
+    pub theme: String
 }

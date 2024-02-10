@@ -1,5 +1,5 @@
 
-<link rel="stylesheet" href="{{url}}/static/main.css">
+<link rel="stylesheet" href="{{url}}/static/terminal.min.css">
     <style>
     :root {
         --global-font-size: 15px;

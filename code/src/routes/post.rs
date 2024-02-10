@@ -119,7 +119,7 @@ pub fn post(blog_context: &State<structs::blog::Blog>, id: String, _slug: String
  
 
     Template::render(
-        "post",
+        format!("{}/post", blog_context.theme),
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),

@@ -15,14 +15,14 @@
 <body class="terminal">
 
 <div class="blog">
-{% include "partials/header" %}
+{% include "terminal.css/partials/header" %}
 
     {% block content %}
 {% endblock %}
 </div>
 
-{% include "partials/footer" %}
-{% include "partials/css" %}
+{% include "terminal.css/partials/footer" %}
+{% include "terminal.css/partials/css" %}
 </body>
 
 </html>

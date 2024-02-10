@@ -39,7 +39,7 @@ pub fn index(blog_context: &State<structs::blog::Blog>, tag: Option<String>, pag
   
     let all_pages = pagination.pages.clone();
     Template::render(
-        "index",
+        format!("{}/index", blog_context.theme),
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),

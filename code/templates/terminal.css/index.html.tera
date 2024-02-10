@@ -1,0 +1,6 @@
+{% extends "terminal.css/layout" %}
+{% block content %}
+
+{% include "terminal.css/partials/post_list" %}
+{% include "terminal.css/partials/pagination" %}
+{% endblock content %}

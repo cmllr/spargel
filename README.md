@@ -34,7 +34,8 @@ Make sure the folders `posts`, `cache` (both writable) and `static` are present 
     "meta": {
         "SomeMetaKey": "ThisIsOptional"
     },
-    "url": "https://yoururlwithouttrailingslash.example.tld"
+    "url": "https://yoururlwithouttrailingslash.example.tld",
+    "theme": "terminal.css"
 }
 
 ```

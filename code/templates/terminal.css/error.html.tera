@@ -1,4 +1,4 @@
-{% extends "layout" %}
+{% extends "terminal.css/layout" %}
 {% block content %}
 
 {{status}}

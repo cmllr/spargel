@@ -27,7 +27,7 @@ pub fn error(blog_context: &State<structs::blog::Blog>, status: usize) -> Templa
     
     let all_pages: Vec<Post> = pagination.pages;
     Template::render(
-        "error",
+        format!("{}/error", blog_context.theme),
         context! {
             title: blog_context.title.to_owned(),
             sub_title:  blog_context.sub_title.to_owned(),
