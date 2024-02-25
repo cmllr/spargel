@@ -1,7 +1,4 @@
-dev
-
-🐛 bug fixes
-
+# 0.3.0
 
 🆕 features
 
@@ -12,7 +9,8 @@ dev
 - Introduce cache control flag
 - Get rid of /static/ on dev time (will be compiled in the Dockerfile)
 - Add https://github.com/edwardtufte/tufte-css based theme "plain"
-0.2.0
+
+# 0.2.0
 
 🐛 bug fixes
 
@@ -28,6 +26,6 @@ dev
 - Add image resizing on upload
 
 
-0.1.0
+# 0.1.0
 
 - Added Dockerfile for initial deployment
