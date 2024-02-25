@@ -1,0 +1,2 @@
+<h1 id="tufte-css"><a href="/{% if is_edit_mode %}?token={{token}}{% endif%}">{{ title }}</a></h1>
+<p class="subtitle">{{ sub_title }}</p>

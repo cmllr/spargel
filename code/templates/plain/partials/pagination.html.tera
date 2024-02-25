@@ -1,0 +1,9 @@
+<div class="pagination">
+    {% if pagination.has_prev %}
+    <a href="/?page={{pagination.cur_page - 1}}">  <-- </a>
+    {% endif %}
+    {{pagination.cur_page}}/{{pagination.all_pages}}
+    {% if pagination.has_next %}
+    <a href="/?page={{pagination.cur_page + 1}}"> --> </a>
+    {% endif %}
+</div>

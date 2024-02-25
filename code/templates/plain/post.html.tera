@@ -1,0 +1,8 @@
+{% extends "plain/layout" %}
+{% block content %}
+    {% if not is_edit_mode %}
+    {% include "plain/partials/post" %}
+    {% else %}
+    {% include "plain/partials/post_editor" %}
+    {% endif %}
+{% endblock %}

@@ -16,6 +16,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use regex::Regex;
 use speedy::{Readable, Writable};
@@ -32,7 +34,8 @@ pub struct Post {
     pub hide_from_robots: bool,
     pub image: String,
     pub path: String,
-    pub raw_content: String
+    pub raw_content: String,
+    pub parsed_content: String
 }
 
 impl Post {
@@ -43,12 +46,12 @@ impl Post {
         /* TODO: The URL must be injected into the template, also */
         return String::from(format!("/post/{}/{}", self.id, self.slug));
     }
-    pub fn images(self) -> Vec<String> {
-        let haystack = self.html();
-        let re = Regex::new(r#"img src\s{0,}=\s{0,}("|')([^("|')]+)"#).unwrap();
-        let mut results = vec![];
-        for (_, [_, image_url]) in re.captures_iter(haystack.as_str()).map(|c| c.extract()) {
-            results.push(image_url.to_string());
+    pub fn images(self) -> HashMap<String, String> {
+        let haystack: String = self.html();
+        let re = Regex::new(r#"img src\s{0,}=\s{0,}("|')([^("|')]+)("|') alt\s{0,}=\s{0,}("|')([^("|')]+)"#).unwrap();
+        let mut results: HashMap<String, String> = HashMap::new();
+        for (_, [_, image_url, _, _, alt_text]) in re.captures_iter(haystack.as_str()).map(|c| c.extract()) {
+            results.insert(alt_text.to_string(), image_url.to_string());
         }
         return results;
     }

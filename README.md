@@ -35,7 +35,10 @@ Make sure the folders `posts`, `cache` (both writable) and `static` are present 
         "SomeMetaKey": "ThisIsOptional"
     },
     "url": "https://yoururlwithouttrailingslash.example.tld",
-    "theme": "terminal.css"
+    "token": "your edit token",
+    "theme": "terminal.css",
+    "page_length": 2,
+    "cache": false
 }
 
 ```

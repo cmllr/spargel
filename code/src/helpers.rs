@@ -23,7 +23,6 @@ use std::fs;
 use std::io;
 use std::os::unix::ffi::OsStrExt;
 use std::path::Path;
-use std::path::PathBuf;
 
 extern crate slugify;
 use chrono::NaiveDateTime;
@@ -80,21 +79,24 @@ pub fn get_posts(blog_context: &State<Blog>) -> Vec<Post> {
             for line in raw_content.lines().skip(3) {
                 content.push_str(format!("{}\n", line).as_str());
             }
+
             let slug = slugify!(&title.clone().as_str());
             let mut post = Post {
                 id: id,
                 title: title,
                 date: parsed_date.timestamp(),
-                content: content,
+                content: content.clone(),
                 slug: slug,
                 is_page: is_page,
                 tags: tags,
                 hide_from_robots: hide_from_bots,
                 image: String::new(),
                 path: full_file_path.into_os_string().into_string().unwrap(),
-                raw_content: raw_content
+                raw_content: raw_content,
+                parsed_content: markdown::to_html(content.as_str())
             };
-            let images: Vec<String> = post.clone().images();
+            let images: Vec<String> = post.clone().images().values().cloned().collect();
+            /* Get the post image */
             if images.len() > 0 {
                 let image: &String = images.get(0).unwrap();
                 if image.starts_with(&blog_context.url) {
@@ -106,6 +108,16 @@ pub fn get_posts(blog_context: &State<Blog>) -> Vec<Post> {
                     post.image = image.to_string();
                 }
             }
+            let mut new_content = post.clone().parsed_content;
+            /* set captions */
+            for (alt_text, url) in post.clone().images() {
+                let needle: String = format!("<img src=\"{}\" alt=\"{}\" />", url, alt_text);
+                // TODO: Use proper templateing
+                let replacement: String = format!("<p><figure><img src=\"{}\" alt=\"{}\" title=\"{}\" /> <br/> <figcaption>{}</figcaption></figure></p>", url, alt_text, alt_text, alt_text);
+                
+                new_content = new_content.replace(needle.as_str(), replacement.as_str());
+            }
+            post.parsed_content = new_content.clone();
             posts.push(post);
         }
     }

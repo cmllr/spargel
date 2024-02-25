@@ -9,7 +9,9 @@ dev
 - Add caching to further reduce load times
 - Add 404 error page
 - Add thumbnail generation
-
+- Introduce cache control flag
+- Get rid of /static/ on dev time (will be compiled in the Dockerfile)
+- Add https://github.com/edwardtufte/tufte-css based theme "plain"
 0.2.0
 
 🐛 bug fixes
