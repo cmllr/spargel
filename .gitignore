@@ -2,5 +2,7 @@ code/target/
 code/blog.json
 code/posts
 code/templates/terminal.css/sass/node_modules/
+code/templates/plain/node_modules/
 code/uploads/*
 code/cache/*
+code/static/*

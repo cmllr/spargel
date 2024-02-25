@@ -1,0 +1,26 @@
+
+<section>
+    <h2>
+        <a href="/post/{{p.id}}/{{p.slug}}">{{p.title}}</a>
+    </h2>
+    
+    <p>
+        <span class="marginnote">
+            {{p.date | date}}
+        </span>
+        {% for tag in p.tags %}
+            <span class="marginnote">
+                <a href="/?tag={{ tag }}"><em>{{tag}}</em></a>
+            </span>
+        {% endfor %}
+
+        {% if is_edit_mode %}
+            <span class="marginnote">
+                <a href="/post/{{p.id}}/{{p.slug}}?token={{token}}">✏️</a>
+            </span>
+        {% endif %}
+    </p>
+    <p>
+        {{p.parsed_content|safe}}
+    </p>
+</section>

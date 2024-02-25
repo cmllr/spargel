@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "terminal.css": "^0.7.5"
+  },
+  "scripts": {
+    "assets": "echo nothing"
   }
 }

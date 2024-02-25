@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "tufte-css": "https://github.com/edwardtufte/tufte-css.git"
+  },
+  "scripts": {
+    "assets": "cp -R ./node_modules/tufte-css/et-book ../../static/"
+  }
+}

@@ -1,0 +1,32 @@
+<form action="" method="post">
+    <input type="hidden" value="{{p.path}}" name="path">
+
+    <input type="hidden" value="/post/{{p.id}}/{{p.slug}}?token={{token}}" name="return_to">
+    <textarea name="raw_content" rows="30">{{p.raw_content}}</textarea>
+    <h2 class="media-files-header">Media files <span class="expand-indicator"></span></a></h2>
+    <iframe class="media hidden" src="/media?token={{token}}"></iframe>
+    <div class="editor-actions">
+        <div class="btn-group">
+            <input class="btn btn-primary btn-ghost" name="submit" type="submit" value="submit" />
+            {% if p.slug != "new"%}
+            <input class="btn btn-error btn-ghost" name="submit" type="submit" value="delete" />
+            {% endif %}
+        </div>
+    </div>
+</form>
+
+<script>
+    var expander = document.querySelector(".expand-indicator")
+    var iframe = document.querySelector("iframe.media")
+    applyVisiblityIframe();
+
+    expander.addEventListener("click", e => {
+        iframe.classList.toggle("hidden");
+        applyVisiblityIframe();
+    });
+
+    function applyVisiblityIframe() {
+        var is_visible = !iframe.classList.contains("hidden");
+        expander.textContent = "["+(is_visible?"-":"+")+"]"
+    }
+</script>

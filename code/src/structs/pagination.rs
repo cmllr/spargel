@@ -47,7 +47,7 @@ impl Pagination {
     // Get all posts from the index pickle, if available
     pub fn get_posts(blog_context: &State<Blog>) -> Pagination {
         let slug_value: String = String::from("index");
-        let is_pickled = Pagination::is_pickled(slug_value.clone(), 1);
+        let is_pickled = blog_context.cache && Pagination::is_pickled(slug_value.clone(), 1);
         return match is_pickled {
             true => {
                 Pagination::unpickle(slug_value, 1)
@@ -110,7 +110,8 @@ impl Pagination {
         // If the named page with the current page was already pickled -> remove the unpickled one instead of querying again
 
         let slug_value: String = tag.clone().unwrap_or(String::from("index"));
-        if Pagination::is_pickled(slug_value.clone(), current_site) {
+        print!("Caching on={}", blog_context.cache);
+        if blog_context.cache && Pagination::is_pickled(slug_value.clone(), current_site) {
             let got = Pagination::unpickle(slug_value, current_site);
             return got;
         }
@@ -142,7 +143,7 @@ impl Pagination {
         let all_items_count = posts.len();
         print!("ITEMS={}, TOTAL={}", all_items_count, total_items_count);
 
-        let post_per_page: usize = 8;
+        let post_per_page: usize = blog_context.page_length;
 
         let all_pages = total_items_count / post_per_page;
         let offset = total_items_count - (all_pages) * post_per_page;
@@ -175,7 +176,7 @@ impl Pagination {
             items: paginated_items,
             pages: pages,
         };
-        if slug_value.len() > 0 {
+        if blog_context.cache && slug_value.len() > 0 {
             Pagination::pickle(result.clone(), slug_value);
         }
         return result;

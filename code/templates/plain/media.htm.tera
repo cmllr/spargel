@@ -1,0 +1,6 @@
+<head>
+{% include "plain/partials/css" %}
+</head>
+<body class="full">
+{% include "plain/partials/media" %}
+</div>
